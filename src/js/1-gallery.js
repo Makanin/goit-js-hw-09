@@ -1,5 +1,5 @@
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 
 const images = [
@@ -68,29 +68,30 @@ const images = [
   },
 ];
 
-const galleryEl = document.querySelector(".gallery");
+const gallery = document.querySelector('.gallery');
 
-const galleryMarkup = images
+// На живій сторінці відображається галерея зображень із масиву даних images
+const markup = images
   .map(
-    ({ preview, original, description }) => `
-    <li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          alt="${description}"
-        />
-      </a>
-    </li>
-  `
+    image =>
+      `<li>
+      <a class="gallery-link" target="_blank" href="${image.original}">
+        <img 
+            class="gallery-image" 
+            src="${image.preview}" 
+            data-source="${image.original}" 
+            alt="${image.description}" />
+        </a>
+    </li>`
   )
-  .join("");
 
-galleryEl.innerHTML = galleryMarkup;
+  .join('');
 
+// Дані для галереї створені динамічно в JS
+gallery.insertAdjacentHTML('beforeend', markup);
 
-const lightbox = new SimpleLightbox(".gallery a", {
-  captions: true,
-  captionsData: "alt",
+//Логіка спрацювання бібліотеки. Додано лише потрібне, те що стоїть по дефолту - не дублював
+const newGallery = new SimpleLightbox('.gallery-link', {
+  captionsData: 'alt',
   captionDelay: 250,
 });

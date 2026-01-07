@@ -1,48 +1,55 @@
-const STORAGE_KEY = "feedback-form-state";
-
 const formData = {
-  email: "",
-  message: "",
+  email: '',
+  message: '',
 };
 
-const formEl = document.querySelector(".feedback-form");
+const form = document.querySelector('.feedback-form');
+const localStorageKey = 'feedback-form-state';
 
-const savedData = localStorage.getItem(STORAGE_KEY);
 
-if (savedData) {
-  const parsedData = JSON.parse(savedData);
-
-  formData.email = parsedData.email || "";
-  formData.message = parsedData.message || "";
-
-  formEl.elements.email.value = formData.email;
-  formEl.elements.message.value = formData.message;
+function autoFill() {
+  const saveData = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+  if (saveData.email) {
+    form.elements.email.value = saveData.email;
+    formData.email = saveData.email;
+  }
+  if (saveData.message) {
+    form.elements.message.value = saveData.message;
+    formData.message = saveData.message;
+  }
 }
-formEl.addEventListener("input", event => {
-  const { name, value } = event.target;
 
-  if (!name) return;
-
-  formData[name] = value.trim();
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-});
+autoFill();
 
 
-formEl.addEventListener("submit", event => {
-  event.preventDefault();
-
-  if (!formData.email || !formData.message) {
-    alert("Fill please all fields");
-    return;
+form.addEventListener('input', evt => {
+  if (evt.target.name === 'email') {
+    formData.email = evt.target.value;
+  } else if (evt.target.name === 'message') {
+    formData.message = evt.target.value;
   }
 
+  localStorage.setItem(localStorageKey, JSON.stringify(formData));
+  console.log(localStorage);
+});
+console.log(localStorage);
+
+
+form.addEventListener('submit', evt => {
+  evt.preventDefault();
+  const email = form.elements.email.value.trim();
+  const message = form.elements.message.value.trim();
+
+  if (email === '' || message === '') {
+    return alert('Fill please all fields');
+  }
+
+  console.log(`email: ${evt.target.elements.email.value}`);
+  console.log(`message: ${evt.target.elements.message.value}`);
   console.log(formData);
 
-  localStorage.removeItem(STORAGE_KEY);
-
-  formData.email = "";
-  formData.message = "";
-
-  formEl.reset();
+  localStorage.removeItem(localStorageKey);
+  form.reset();
+  formData.email = '';
+  formData.message = '';
 });
